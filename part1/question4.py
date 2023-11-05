@@ -1,5 +1,4 @@
-import pets_db
-
+ import pets_db
 ################################################################################
 #     ____                          __     _                          __ __
 #    / __ \  __  __  ___    _____  / /_   (_)  ____    ____          / // /
@@ -11,7 +10,7 @@ import pets_db
 ################################################################################
 #
 # Instructions:
-# Question 4 and Question 5 are about writing SQL. THey use the database that is 
+# Question 4 and Question 5 are about writing SQL. They use the database that is 
 # created in the file `pets_db.py`. 
 # These questions use a database called SQLite. You do not need to install anything.
 # In the file `pets_db.py` three tables are created. Data is then added to each 
@@ -23,9 +22,9 @@ import pets_db
 # The output should be a list of tuples in the format: (<pet name>, <species>, <age>)
 
 sql_pets_owned_by_nobody = """
-
-Your SQL here.
-
+SELECT pet_name, species, age
+FROM pets
+WHERE owner_id IS NULL;
 """
 
 # Part 4.B:
@@ -33,16 +32,25 @@ Your SQL here.
 # The output should be an integer.
 
 sql_pets_older_than_owner = """
-
-Your SQL here.
-
+SELECT COUNT(pets.id) as num_pets_older_than_owner
+FROM pets
+JOIN people ON pets.owner_id = people.id
+WHERE pets.age > people.age;
 """
 
 # Part 4.C: BONUS CHALLENGE! 
 # Write SQL to select the pets that are owned by Bessie and nobody else.
 # The output should be a list of tuples in the format: (<person name>, <pet name>, <species>)
-sql_only_owned_by_bessie = """ 
-
-Your SQL here.
-
+sql_only_owned_by_bessie = """
+SELECT people.person_name, pets.pet_name, pets.species
+FROM pets
+JOIN people ON pets.owner_id = people.id
+WHERE people.person_name = 'Bessie'
+AND NOT EXISTS (
+    SELECT 1
+    FROM pets AS p
+    WHERE p.owner_id = people.id
+    AND p.pet_name <> pets.pet_name
+);
 """
+
